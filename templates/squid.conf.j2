@@ -5,8 +5,8 @@ http_port {{ squid_port }}
 cache_effective_user {{ squid_user }}
 cache_effective_group {{ squid_group }}
 
-{% for acl in squid_network_acls %}
-acl {{ acl.name }} {{ acl.type }} {{ acl.network }} {{ acl.comment | default(None) | comment or omit }}
+{% for network in squid_networks %}
+acl {{ network.name }} {{ network.type }} {{ network.range }} {{ network.comment | default(None) | comment or omit }}
 {% endfor %}
 
 {% if squid_append_domain is defined %}

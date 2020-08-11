@@ -17,28 +17,28 @@ squid_safe_ports:
   - 591         # filemaker
   - 777         # multiling http
 
-squid_network_acls:
+squid_networks:
   - name: localhost
     type: src
-    network: '127.0.0.0/8'
+    range: '127.0.0.0/8'
   - name: localnet
     type: src
-    network: '10.0.0.0/8'
+    range: '10.0.0.0/8'
     comment: '# RFC1918 possible internal network'
   - name: localnet
     type: src
-    network: '172.16.0.0/12'
+    range: '172.16.0.0/12'
     comment: '# RFC1918 possible internal network'
   - name: localnet
     type: src
-    network: '192.168.0.0/16'
+    range: '192.168.0.0/16'
     comment: '# RFC1918 possible internal network'
   - name: localnet
     type: src
-    network: 'fc00::/7'
+    range: 'fc00::/7'
     comment: '# RFC 4193 local private network range'
   - name: localnet
     type: src
-    network: 'fe80::/10'
+    range: 'fe80::/10'
     comment: '# RFC 4291 link-local (directly plugged) machines'
 
