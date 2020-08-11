@@ -4,3 +4,41 @@
 squid_port: 3128
 
 squid_cache_dir: ufs /var/spool/squid 100 16 256
+
+squid_safe_ports:
+  - 80          # httpd
+  - 21          # ftp
+  - 443         # https
+  - 70          # gopher
+  - 210         # wais
+  - 1025-65535  # unregistered ports
+  - 280         # http-mgmt
+  - 488         # gss-http
+  - 591         # filemaker
+  - 777         # multiling http
+
+squid_network_acls:
+  - name: localhost
+    type: src
+    network: '127.0.0.0/8'
+  - name: localnet
+    type: src
+    network: '10.0.0.0/8'
+    comment: '# RFC1918 possible internal network'
+  - name: localnet
+    type: src
+    network: '172.16.0.0/12'
+    comment: '# RFC1918 possible internal network'
+  - name: localnet
+    type: src
+    network: '192.168.0.0/16'
+    comment: '# RFC1918 possible internal network'
+  - name: localnet
+    type: src
+    network: 'fc00::/7'
+    comment: '# RFC 4193 local private network range'
+  - name: localnet
+    type: src
+    network: 'fe80::/10'
+    comment: '# RFC 4291 link-local (directly plugged) machines'
+

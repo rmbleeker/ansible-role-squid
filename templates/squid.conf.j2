@@ -5,24 +5,20 @@ http_port {{ squid_port }}
 cache_effective_user {{ squid_user }}
 cache_effective_group {{ squid_group }}
 
-acl localhost src 127.0.0.0/8
-acl localnet src 10.0.0.0/8	# RFC1918 possible internal network
-acl localnet src 172.16.0.0/12	# RFC1918 possible internal network
-acl localnet src 192.168.0.0/16	# RFC1918 possible internal network
-acl localnet src fc00::/7       # RFC 4193 local private network range
-acl localnet src fe80::/10      # RFC 4291 link-local (directly plugged) machines
+{% for acl in squid_network_acls %}
+acl {{ acl.name }} {{ acl.type }} {{ acl.network }} {{ acl.comment | default(None) | comment or omit }}
+{% endfor %}
+
+{% if squid_append_domain is defined %}
+append_domain {{ squid_append_domain }}
+{% endif %}
 
 acl SSL_ports port 443
-acl Safe_ports port 80		# http
-acl Safe_ports port 21		# ftp
-acl Safe_ports port 443		# https
-acl Safe_ports port 70		# gopher
-acl Safe_ports port 210		# wais
-acl Safe_ports port 1025-65535	# unregistered ports
-acl Safe_ports port 280		# http-mgmt
-acl Safe_ports port 488		# gss-http
-acl Safe_ports port 591		# filemaker
-acl Safe_ports port 777		# multiling http
+{% if squid_safe_ports is defined %}
+{% for safe_port in squid_safe_ports %}
+acl Safe_ports port {{ safe_port }}
+{% endfor %}
+{% endif %}
 acl CONNECT method CONNECT
 
 http_access deny !Safe_ports
