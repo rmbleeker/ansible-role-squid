@@ -5,13 +5,23 @@ http_port {{ squid_port }}
 cache_effective_user {{ squid_user }}
 cache_effective_group {{ squid_group }}
 
-{% for network in squid_networks %}
-acl {{ network.name }} {{ network.type }} {{ network.range }} {{ network.comment | default(None) | comment or omit }}
-{% endfor %}
-
 {% if squid_append_domain is defined %}
 append_domain {{ squid_append_domain }}
 {% endif %}
+
+{% if squid_ssl_exceptions is defined %}
+{% for exception in squid_ssl_exceptions %}
+acl {{ exception.name }} dst {{ exception.dest }}
+{% endfor %}
+{% for exception in squid_ssl_exceptions %}
+sslproxy_cert_error allow {{ exception.name }}
+{% endfor %}
+{% endif %}
+sslproxy_cert_error deny all
+
+{% for network in squid_networks %}
+acl {{ network.name }} {{ network.type }} {{ network.range }} {{ network.comment | default(None) | comment or omit }}
+{% endfor %}
 
 acl SSL_ports port 443
 {% if squid_safe_ports is defined %}
@@ -26,14 +36,22 @@ http_access deny !Safe_ports
 # Deny CONNECT to other than secure SSL ports
 http_access deny CONNECT !SSL_ports
 
-http_access allow localhost
-http_access deny
+{% if squid_allow_manager %}
+# Allow cachemgr access from {{ squid_allow_manager if squid_allow_manager is not True else 'anywhere' }}
+http_access allow {{ squid_allow_manager if squid_allow_manager is not True }} manager
+{% if squid_allow_manager is True %}
+{% else %}
+# Deny cachemgr access from anywhere else
+http_access deny manager
+{% endif %}
+{% endif %}
 
+# We strongly recommend the following be uncommented to protect innocent
+# web applications running on the proxy server who think the only
+# one who can access services on "localhost" is a local user
 #http_access deny to_localhost
 
-http_access allow localnet
 http_access allow localhost
-
 http_access deny all
 
 # Uncomment and adjust the following to add a disk cache directory.
@@ -63,5 +81,11 @@ acl {{ acl.name }} {{ acl.classifier }} {{ acl.value }}
 {% if squid_cache_rules is defined %}
 {% for rule in squid_cache_rules %}
 cache {{ rule.decision }} {{ rule.acl }}
+{% endfor %}
+{% endif %}
+
+{% if squid_access_log is defined %}
+{% for item in squid_access_log %}
+access_log {{ item }}
 {% endfor %}
 {% endif %}
