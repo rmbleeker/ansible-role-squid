@@ -46,6 +46,11 @@ http_access deny manager
 {% endif %}
 {% endif %}
 
+{% for item in squid_http_access %}
+{{ item.comment | default(None) | comment or omit }}
+http_access {{ item.state }} {{ item.list | join(' ')
+{% endfor %}
+
 # We strongly recommend the following be uncommented to protect innocent
 # web applications running on the proxy server who think the only
 # one who can access services on "localhost" is a local user
