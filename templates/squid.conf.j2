@@ -31,11 +31,6 @@ acl Safe_ports port {{ safe_port }}
 {% endif %}
 acl CONNECT method CONNECT
 
-http_access deny !Safe_ports
-
-# Deny CONNECT to other than secure SSL ports
-http_access deny CONNECT !SSL_ports
-
 {% if squid_allow_manager %}
 # Allow cachemgr access from {{ squid_allow_manager if squid_allow_manager is not True else 'anywhere' }}
 http_access allow {{ squid_allow_manager if squid_allow_manager is not True }} manager
@@ -46,9 +41,9 @@ http_access deny manager
 {% endif %}
 {% endif %}
 
-{% for item in squid_http_access %}
-{{ item.comment | default(None) | comment or omit }}
-http_access {{ item.state }} {{ item.list | join(' ')
+{% for http_access in squid_http_access %}
+{{ http_access.comment | default(None) | comment or omit }}
+http_access {{ http_access.state }} {{ http_access.items | join(' ')
 {% endfor %}
 
 # We strongly recommend the following be uncommented to protect innocent

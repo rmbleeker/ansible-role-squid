@@ -17,6 +17,14 @@ squid_safe_ports:
   - 591         # filemaker
   - 777         # multiling http
 
+squid_http_access:
+  - state: deny
+    items: '!Safe_ports'
+    comment: "Deny requests to certain unsafe ports"
+  - state: deny
+    items: 'CONNECT !SSL_ports'
+    comment: "Deny CONNECT to other than secure SSL ports"
+
 squid_networks:
   - name: localhost
     type: src
