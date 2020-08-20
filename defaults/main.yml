@@ -22,7 +22,9 @@ squid_http_access:
     items: '!Safe_ports'
     comment: "Deny requests to certain unsafe ports"
   - state: deny
-    items: 'CONNECT !SSL_ports'
+    items:
+      - 'CONNECT'
+      - '!SSL_ports'
     comment: "Deny CONNECT to other than secure SSL ports"
 
 squid_networks:
