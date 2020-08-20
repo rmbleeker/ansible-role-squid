@@ -26,6 +26,11 @@ squid_http_access:
       - 'CONNECT'
       - '!SSL_ports'
     comment: "Deny CONNECT to other than secure SSL ports"
+  - state: allow
+    items: 'localnet'
+    comment: "Example rule allowing access from your local networks\n
+              Adapt localnet in the ACL section to list your (internal) IP networks\n
+              from where browsing should be allowed"
 
 squid_networks:
   - name: localhost
