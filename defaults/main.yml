@@ -2,7 +2,12 @@
 # defaults file for squid
 
 squid_port: 3128
-squid_cache_dir: ufs /var/spool/squid 100 16 256
+squid_cache:
+  type: ufs
+  directory: /var/spool/squid
+  size: 100 # in megebytes
+  options: '16 256'
+squid_coredump_dir: "{{ squid_cache.directory }}"
 squid_allow_manager: localhost
 
 squid_safe_ports:
