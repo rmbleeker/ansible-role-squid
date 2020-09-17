@@ -16,6 +16,8 @@ _squid_group:
 
 squid_group: "{{ _squid_group[ansible_os_family] | default(_squid_group['default']) }}"
 
+squid_home: /var/spool/squid
+
 squid_config_directory: /etc/squid
 
 squid_config_file: squid.conf

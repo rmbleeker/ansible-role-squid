@@ -41,7 +41,7 @@
     group: "{{ squid_group }}"
     create_home: no
     state: present
-    home: /var/spool/squid
+    home: "{{ squid_home }}"
     shell: /sbin/nologin
     system: yes
 

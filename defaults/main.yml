@@ -4,10 +4,10 @@
 squid_port: 3128
 squid_cache:
   type: ufs
-  directory: /var/spool/squid
+  directory: "{{ squid_home }}"
   size: 100 # in megebytes
   options: '16 256'
-squid_coredump_dir: "{{ squid_cache.directory }}"
+squid_coredump_dir: "{{ squid_home }}"
 squid_allow_manager: localhost
 
 squid_safe_ports:
